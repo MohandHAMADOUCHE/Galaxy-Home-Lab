@@ -1,0 +1,24 @@
+
+# Please copy and rename this file.
+#
+# !Attention!
+# Always ensure to load the env variables in every terminal session.
+# Otherwise the env variables will not be available
+
+DOCKER_COMPOSE_APP_PORT_PUBLISHED=9001
+DOCKER_COMPOSE_APP_PORT_TARGET=9001
+
+# IMPORTANT: When the env var DEFAULT_PAD_TEXT is unset or empty, then the pad is not established (not the landing page).
+# The env var DEFAULT_PAD_TEXT seems to be mandatory in the latest version of etherpad.
+DOCKER_COMPOSE_APP_NAME=etherpad
+
+DOCKER_COMPOSE_APP_ADMIN_PASSWORD=
+
+DOCKER_COMPOSE_APP_DB_CHARSET=utf8mb4
+DOCKER_COMPOSE_APP_DEFAULT_PAD_TEXT="Welcome to Etherpad! This pad text is synchronized as you type, so that everyone viewing this page sees the same text. This allows you to collaborate seamlessly on documents!"
+
+
+
+DOCKER_COMPOSE_POSTGRES_DATABASE=db-etherpad
+DOCKER_COMPOSE_POSTGRES_PASSWORD=DB_PASSWORD
+DOCKER_COMPOSE_POSTGRES_USER=Etherpad

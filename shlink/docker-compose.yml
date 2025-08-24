@@ -1,0 +1,44 @@
+---
+
+services:
+  shlink:
+    image: shlinkio/shlink:stable
+    restart: always
+    container_name: shlink-backend
+    environment:
+      - TZ="Europe/Paris"
+      - DEFAULT_DOMAIN=${DEFAULT_DOMAIN} #no http/https. no trailing slash
+      - IS_HTTPS_ENABLED=true
+      - GEOLITE_LICENSE_KEY=${GEOLITE_LICENSE_KEY} #we'll need to get this key from maxmind.com
+      - DB_DRIVER=maria
+      - DB_USER=shlink
+      - DB_NAME=shlink
+      - DB_PASSWORD=${DB_PASSWORD} #change this
+      - DB_HOST=database
+    depends_on:
+      - database
+    ports:
+      - 8989:8080
+
+  database:
+    image: mariadb:10.8
+    restart: always
+    container_name: shlink-database
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD} #change this
+      - MARIADB_DATABASE=shlink
+      - MARIADB_USER=shlink
+      - MARIADB_PASSWORD=${DB_PASSWORD} #change this
+    volumes:
+      - ./data/DB_shlink/mysql:/var/lib/mysql
+
+  shlink-web-client:
+    image: shlinkio/shlink-web-client:stable
+    restart: always
+    container_name: shlink-gui
+    volumes:
+      - ./data/my-config:/usr/share/nginx/html
+    depends_on:
+      - shlink
+    ports:
+      - 8999:8080

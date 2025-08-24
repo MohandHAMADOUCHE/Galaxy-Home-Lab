@@ -1,0 +1,7 @@
+# ignore tout les docker secret and environment files existent dans les sous dossiers
+**/secret.*
+**/.env
+
+
+# ignore tout les fichiers dans le dossier data
+**/data/*
