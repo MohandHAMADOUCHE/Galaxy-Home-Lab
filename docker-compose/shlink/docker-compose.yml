@@ -30,14 +30,14 @@ services:
       - MARIADB_USER=shlink
       - MARIADB_PASSWORD=${DB_PASSWORD} #change this
     volumes:
-      - ./data/DB_shlink/mysql:/var/lib/mysql
+      - ../data/shlink/DB_shlink/mysql:/var/lib/mysql
 
   shlink-web-client:
     image: shlinkio/shlink-web-client:stable
     restart: always
     container_name: shlink-gui
     volumes:
-      - ./data/my-config:/usr/share/nginx/html
+      - ../data/shlink/my-config:/usr/share/nginx/html
     depends_on:
       - shlink
     ports:

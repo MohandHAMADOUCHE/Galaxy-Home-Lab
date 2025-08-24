@@ -6,8 +6,8 @@ services:
     tty: true
     stdin_open: true
     volumes:
-      - ./data/etherpad-plugins:/opt/etherpad-lite/src/plugin_packages
-      - ./data/etherpad-var:/opt/etherpad-lite/var
+      - ../data/etherpad/etherpad-plugins:/opt/etherpad-lite/src/plugin_packages
+      - ../data/etherpad/etherpad-var:/opt/etherpad-lite/var
     depends_on:
       - postgres
     environment:
@@ -43,4 +43,4 @@ services:
     # ports:
     #   - "5432:5432"
     volumes:
-      - ./data/postgres_data:/var/lib/postgresql/data
+      - ../data/etherpad/postgres_data:/var/lib/postgresql/data
