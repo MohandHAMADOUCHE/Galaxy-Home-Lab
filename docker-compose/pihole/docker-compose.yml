@@ -1,0 +1,48 @@
+
+# More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    domainname: ${DOMAINNAME} 
+    dns:
+      - 127.0.0.1 # use local DNS, since the pihole 
+      - ${DNS1}
+      - ${DNS2}
+
+    networks:
+      macvlan0:
+        ipv4_address: ${MACVLAN0} 
+    # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "80:80/tcp"
+    environment:
+
+      ServerIP: ${MACVLAN0}  # must match ipv4_address above
+      VIRTUAL_HOST: ${VIRTUAL_HOST} 
+      PROXY_LOCATION: ${PROXY_LOCATION}
+      FTLCONF_webserver_api_expose_all: "true"
+      FTLCONF_webserver_block_https: "false"
+      REV_SERVER: "true"
+      TZ: ${TZ} 
+      WEBPASSWORD: ${WEBPASSWORD} 
+    volumes:
+      - '../data/pihole/etc-pihole:/etc/pihole'
+      - '../data/pihole/etc-dnsmasq.d:/etc/dnsmasq.d'
+    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+    cap_add:
+      - NET_ADMIN # Required if you are using Pi-hole as your DHCP server, else not needed
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.pihole.rule=Host(`pihole.home.${DOMAINNAME}`)
+      - traefik.http.routers.pihole.tls=true
+      - traefik.http.routers.pihole.tls.certresolver=cloudflare
+      - traefik.http.routers.pihole.entrypoints=${ENTRYPOINTS} 
+      - traefik.http.services.pihole.loadbalancer.server.port=80
+networks:
+  macvlan0:
+    external: True
