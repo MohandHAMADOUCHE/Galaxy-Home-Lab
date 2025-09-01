@@ -1,0 +1,29 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:2.27.2
+    container_name: portainer
+    restart: always
+    # ports:
+    #   - "8000:8000"       # Port HTTP
+    #   - "9443:9443"      # Port HTTPS
+    networks:
+      - frontend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # Pour contrôler le démon Docker
+      - ../data/portainer/data:/data                         # Volume pour les données de Portainer
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.portainer-https.rule=Host(`${HOST_LOCAL}`) || Host(`${HOST_ONLINE}`)
+      - traefik.http.routers.portainer-https.tls=true
+      - traefik.http.routers.portainer-https.tls.certresolver=cloudflare
+      - traefik.http.routers.portainer-https.entrypoints=websecure
+      - "traefik.http.services.portainer-https.loadbalancer.server.port=9000"
+      - "traefik.http.routers.portainer-https.service=portainer-https"
+volumes:
+  portainer_data:                                    # Déclaration du volume 
+networks:
+  frontend:
+    external: true
+
+ 
+ 
