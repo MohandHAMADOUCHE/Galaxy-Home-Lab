@@ -1,0 +1,43 @@
+
+services:
+  database:
+    image: postgres:13.4-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ../data/hedgedoc/db-data:/var/lib/postgresql/data
+      # This config provides UTF-8 support to the database by default
+      #      # If this config is not used, HedgeDoc breaks as it tries to write
+      #      # UTF-8 to a latin database.
+      - ../data/hedgedoc/resources/utf8.cnf:/etc/mysql/conf.d/utf8.cnf
+  
+  hedgedoc:
+    image: quay.io/hedgedoc/hedgedoc:latest
+    container_name: hedgedoc
+    restart: always
+    depends_on:
+      - database
+    environment:
+      PUID: ${PUID}  # optional, your user id
+      PGID: ${PGID}  # optional, your group id
+      CMD_DB_URL: ${CMD_DB_URL}
+      CMD_DOMAIN: ${CMD_DOMAIN}
+      CMD_PUBLIC_DOMAIN: ${CMD_PUBLIC_DOMAIN}
+      CMD_URL_ADDPORT: ${CMD_URL_ADDPORT}
+      CMD_ALLOW_ORIGIN: ${CMD_ALLOW_ORIGIN}
+      CMD_PROTOCOL_USESSL: ${CMD_PROTOCOL_USESSL}
+      CMD_HSTS_ENABLE: ${CMD_HSTS_ENABLE}
+      CMD_ALLOW_EMAIL_REGISTER: ${CMD_ALLOW_EMAIL_REGISTER}
+      CMD_HSTS_PRELOAD: ${CMD_HSTS_PRELOAD}
+      CMD_CSP_ENABLE: ${CMD_CSP_ENABLE}
+      UPLOADS_MODE: "0777"  # to Set uploads directory permissions: docker exec -it hedgedoc /bin/sh -c "chmod -R 777 /hedgedoc/public/uploads"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../data/hedgedoc/uploads:/hedgedoc/public/uploads
+volumes:
+  db-data:
+  hedgedoc-data:
